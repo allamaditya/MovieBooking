@@ -23,7 +23,25 @@ public class Movie {
 	private String theaterName;
 	@CreationTimestamp
 	private Date releaseDate;
+	private int totalSeatBooked;
+	private int availableSeatsForBooking;
 	
+	public int getTotalSeatBooked() {
+		return totalSeatBooked;
+	}
+
+	public void setTotalSeatBooked(int totalSeatBooked) {
+		this.totalSeatBooked = totalSeatBooked;
+	}
+
+	public int getAvailableSeatsForBooking() {
+		return availableSeatsForBooking;
+	}
+
+	public void setAvailableSeatsForBooking(int availableSeatsForBooking) {
+		this.availableSeatsForBooking = availableSeatsForBooking;
+	}
+
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "movie")
 	private List<Ticket> ticket;
 

@@ -2,25 +2,28 @@ package com.moviebookingapp.service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.kafka.support.SendResult;
 import org.springframework.stereotype.Service;
 
 import com.moviebookingapp.exceptions.MovieIdAlreadyExistsExceptions;
 import com.moviebookingapp.model.Movie;
 import com.moviebookingapp.repository.MovieRepository;
 
-
 @Service
 public class MovieServiceImplementation implements MovieService {
 
 	@Autowired
 	private MovieRepository movieRepository;
-	
-	@Autowired
-	private KafkaTemplate<String,Movie> kafkaTemplate;
-	
+
+	//@Autowired
+	//private KafkaTemplate<String, Movie> kafkaTemplate;
+
+	private Movie saveAndFlush;
+
 	@Override
 	public List<Movie> getAllMovies() {
 		return movieRepository.findAll();
@@ -32,15 +35,23 @@ public class MovieServiceImplementation implements MovieService {
 		Movie findByMovieName = movieRepository.findByMovieName(movie.getMovieName());
 		if (findById.isPresent() || findByMovieName != null) {
 			throw new MovieIdAlreadyExistsExceptions();
+		} else {
+//			try {
+//				kafkaTemplate.send("movie-app", "Released Movie", movie);
+//			} catch (Exception e) {
+//				System.out.println(e);
+//				
+//			}
+			movie.setTotalTickets(100);
+			movie.setAvailableSeatsForBooking(movie.getTotalTickets());
+			return movieRepository.saveAndFlush(movie);
 		}
-		kafkaTemplate.send("movie-app","Released Movie",movie);
-		return movieRepository.saveAndFlush(movie);
 	}
 
 	@Override
 	public boolean deleteMovie(int movieId) {
 		Movie findById = movieRepository.findById(movieId).get();
-		if (findById.getMovieId()!=-1) {
+		if (findById.getMovieId() != -1) {
 //			ticketService.deleteTicketByMovie(findById.get().getMovieName());
 			movieRepository.deleteById(movieId);
 			return true;
@@ -67,8 +78,6 @@ public class MovieServiceImplementation implements MovieService {
 		Movie findByMovieName = movieRepository.findByMovieName(movieName);
 		if (findByMovieName != null) {
 			Movie movie2 = new Movie();
-			movie2.setMovieName(movieName);
-			movie2.setMovieId(findByMovieName.getMovieId());
 			movie2.setTotalTickets(movie.getTotalTickets());
 			movie2.setTheaterName(movie.getTheaterName());
 			movie2.setReleaseDate(findByMovieName.getReleaseDate());
@@ -81,9 +90,9 @@ public class MovieServiceImplementation implements MovieService {
 	@Override
 	public List<String> getMoviesList() {
 		List<String> listMovies = movieRepository.moviesName();
-		if(listMovies.isEmpty()){
+		if (listMovies.isEmpty()) {
 			return null;
-		}else{
+		} else {
 			return listMovies;
 		}
 	}

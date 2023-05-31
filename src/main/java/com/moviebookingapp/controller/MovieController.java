@@ -12,6 +12,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping(value = "/api/v1.0/moviebooking")
+@CrossOrigin("*")
 public class MovieController {
 
     @Autowired
