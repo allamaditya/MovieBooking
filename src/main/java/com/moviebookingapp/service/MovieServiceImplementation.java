@@ -19,8 +19,8 @@ public class MovieServiceImplementation implements MovieService {
 	@Autowired
 	private MovieRepository movieRepository;
 
-	//@Autowired
-	//private KafkaTemplate<String, Movie> kafkaTemplate;
+//	@Autowired
+//	private KafkaTemplate<String, Movie> kafkaTemplate;
 
 	private Movie saveAndFlush;
 

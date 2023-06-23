@@ -81,6 +81,11 @@
 			<artifactId>jaxb-api</artifactId>
 			<version>2.3.0</version>
 		</dependency>
+		<dependency>
+			<groupId>com</groupId>
+			<artifactId>authorization</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -103,6 +108,7 @@
 				<version>3.7.0.1746</version>
 			</plugin>
 		</plugins>
+		<finalName>movie</finalName>
 	</build>
 
 </project>
